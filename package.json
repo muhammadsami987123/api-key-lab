@@ -7,6 +7,8 @@
     "node": "22.x"
   },
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
     "deploy": "vercel --prod"
   },
   "keywords": [

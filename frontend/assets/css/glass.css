@@ -1713,3 +1713,37 @@ details.raw pre {
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: none; }
 }
+
+/* ---------- 22. Animated accordion ---------- */
+/* Only one FAQ panel stays open at a time; the JS layer animates the
+   height so opening and closing both glide instead of snapping. */
+.faq details {
+  overflow: hidden;
+  transition: background var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease);
+}
+.faq details[open] {
+  box-shadow: 0 22px 48px -34px rgba(16, 24, 40, 0.5), var(--shadow-soft);
+}
+.faq summary {
+  border-radius: inherit;
+  transition: color var(--dur) var(--ease);
+}
+.faq details[open] summary { color: var(--text); }
+.faq summary:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px rgba(10, 132, 255, 0.35);
+}
+.faq .answer,
+.advanced-body {
+  /* keeps text crisp while the height animates */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq details,
+  .faq summary,
+  .advanced { transition: none; }
+}
