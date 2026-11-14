@@ -1,0 +1,47 @@
+# API Key Lab
+
+> Know your AI provider API key works, before you ship.
+
+API Key Lab is an open-source web app that verifies AI provider API keys and reports real health: authentication, model access, a live completion, latency, token usage, and quota/rate-limit signals. It also includes a dedicated chatbot page to chat with the same key via streaming responses.
+
+- Live site: https://apikeylab.vercel.app/
+- Chatbot: https://apikeylab.vercel.app/chat
+- Repository: https://github.com/muhammadsami987123/api-key-lab
+- License: MIT
+- Author: Muhammad Sami Asghar Mughal (https://muhammad-sami.vercel.app)
+
+## What it checks
+
+1. Authentication — whether the provider accepts the key.
+2. Model access — which models are available and a suggested model.
+3. Live completion — a real small request to catch billing, quota, rate-limit, and model-access issues that a simple auth/model-list check can miss.
+
+## Supported providers
+
+OpenAI, Anthropic (Claude), Google Gemini, Groq, Mistral AI, OpenRouter, xAI (Grok), DeepSeek, Together AI, Perplexity, Ollama (local, browser-direct), Custom OpenAI-compatible endpoints, Azure OpenAI, AWS Bedrock, and Google Vertex AI.
+
+## Key pages
+
+- Home / key tester: https://apikeylab.vercel.app/
+- Chatbot: https://apikeylab.vercel.app/chat
+- Security model: https://apikeylab.vercel.app/security
+- Privacy policy: https://apikeylab.vercel.app/privacy
+- Terms of use: https://apikeylab.vercel.app/terms
+
+## Security & privacy (summary)
+
+- Keys are kept in browser session storage and are cleared on tab close/reload flows designed by the app; do not paste keys you are not allowed to transmit.
+- Verification/chat requests go through stateless serverless proxy endpoints (`/api/verify`, `/api/chat`) for proxied providers; Ollama/local flows can run browser-direct.
+- No accounts, analytics, or key database are part of the app design. See the Security and Privacy pages for full details.
+
+## API endpoints
+
+- `POST /api/verify` — verify a key or list models (provider-specific config in request body).
+- `POST /api/chat` — send chat messages; supports streaming SSE responses.
+
+## Source & docs
+
+- README: https://github.com/muhammadsami987123/api-key-lab#readme
+- Releases: https://github.com/muhammadsami987123/api-key-lab/releases
+- Issues: https://github.com/muhammadsami987123/api-key-lab/issues
+- Sitemap: https://apikeylab.vercel.app/sitemap.xml
