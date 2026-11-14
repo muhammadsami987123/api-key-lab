@@ -128,10 +128,11 @@ function serveStatic(req, res, pathname, startedAt) {
   const type = MIME[path.extname(file).toLowerCase()] || 'application/octet-stream';
   const headers = Object.assign({
     'Content-Type': type,
-    /* HTML stays fresh; assets are cacheable like on Vercel. */
+    /* HTML stays fresh; assets revalidate through an ETag so a CSS or JS
+       edit is picked up on the next reload instead of an hour later. */
     'Cache-Control': type.startsWith('text/html')
       ? 'no-store, max-age=0'
-      : 'public, max-age=3600, must-revalidate'
+      : 'no-cache'
   }, COMMON_HEADERS);
 
   fs.stat(file, (err, stat) => {
@@ -139,9 +140,21 @@ function serveStatic(req, res, pathname, startedAt) {
       notFound(res, pathname);
       return;
     }
+
+    const etag = 'W/"' + stat.size.toString(16) + '-' + Math.floor(stat.mtimeMs).toString(16) + '"';
+    headers.ETag = etag;
+
+    if (req.headers['if-none-match'] === etag) {
+      res.writeHead(304, headers);
+      res.end();
+      log(req, 304, startedAt);
+      return;
+    }
+
     res.writeHead(200, Object.assign({ 'Content-Length': stat.size }, headers));
     if (req.method === 'HEAD') {
       res.end();
+      log(req, res.statusCode, startedAt);
       return;
     }
     const stream = fs.createReadStream(file);
