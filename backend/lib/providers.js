@@ -898,14 +898,18 @@ async function streamChat(cfg, messages, maxTokens, write, end) {
     return;
   }
 
-  const { res, body, text } = await request(req.url, {
+  const res = await fetch(req.url, {
     method: 'POST',
     headers: { ...req.headers, Accept: 'text/event-stream' },
-    body: streamBody
+    body: streamBody,
+    signal: AbortSignal.timeout(60000)
   });
 
   if (!res.ok) {
-    throw mapError(id, res.status, body, text);
+    const text = await res.text();
+    let parsed = null;
+    try { parsed = JSON.parse(text); } catch (e) {}
+    throw mapError(id, res.status, parsed, text);
   }
 
   const kind = PROVIDERS[id] ? PROVIDERS[id].kind : 'openai';

@@ -10,6 +10,7 @@
 
   var ui = {
     messages: $('messages'),
+    scrollBottom: $('scrollBottom'),
     form: $('chatForm'),
     input: $('chatInput'),
     sendBtn: $('sendBtn'),
@@ -73,16 +74,57 @@
 
   function format(text) {
     var s = window.AKL.esc(text || '');
-    s = s.replace(/```[a-zA-Z0-9]*\n?([\s\S]*?)```/g, function (m, code) {
-      return '<pre><code>' + code.replace(/\n$/, '') + '</code></pre>';
+    s = s.replace(/```([a-zA-Z0-9]*)\n?([\s\S]*?)```/g, function (m, lang, code) {
+      code = code.replace(/\n$/, '');
+      var label = lang ? '<span class="code-lang">' + lang + '</span>' : '';
+      return '<div class="code-block">' +
+        '<div class="code-head">' + label +
+          '<button type="button" class="code-copy">' + window.AKL.icon('copy', 12) + ' Copy</button>' +
+        '</div>' +
+        '<pre><code>' + code + '</code></pre>' +
+      '</div>';
     });
     s = s.replace(/`([^`\n]+)`/g, '<code>$1</code>');
     s = s.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+    s = s.replace(/^### (.+)$/gm, '<h4 class="md-h">$1</h4>');
+    s = s.replace(/^## (.+)$/gm, '<h3 class="md-h">$1</h3>');
+    s = s.replace(/^# (.+)$/gm, '<h2 class="md-h">$1</h2>');
+    s = s.replace(/^> (.+)$/gm, '<blockquote class="md-q">$1</blockquote>');
+    s = s.replace(/(?:^|\n)((?:[-*] ).+(?:\n(?:[-*] ).+)*)/g, function (m) {
+      var items = m.trim().split(/\n/).map(function (l) {
+        return '<li>' + l.replace(/^[-*] /, '') + '</li>';
+      }).join('');
+      return '\n<ul class="md-list">' + items + '</ul>';
+    });
+    s = s.replace(/(?:^|\n)((?:\d+\. ).+(?:\n(?:\d+\. ).+)*)/g, function (m) {
+      var items = m.trim().split(/\n/).map(function (l) {
+        return '<li>' + l.replace(/^\d+\. /, '') + '</li>';
+      }).join('');
+      return '\n<ol class="md-list">' + items + '</ol>';
+    });
+    s = s.replace(/\n{2,}/g, '</p><p>');
+    if (s && !/^<(div|ul|ol|h|pre|blockquote|p)/.test(s.trim())) s = '<p>' + s + '</p>';
+    s = s.replace(/<p><\/p>/g, '');
     return s;
   }
 
-  function scrollDown() {
-    ui.messages.scrollTop = ui.messages.scrollHeight;
+  function nearBottom() {
+    var el = ui.messages;
+    return el.scrollHeight - el.scrollTop - el.clientHeight < 140;
+  }
+
+  function scrollDown(force) {
+    if (force || nearBottom()) {
+      ui.messages.scrollTop = ui.messages.scrollHeight;
+    }
+    updateScrollBtn();
+  }
+
+  function updateScrollBtn() {
+    if (!ui.scrollBottom) return;
+    var show = !nearBottom() && ui.messages.scrollHeight > ui.messages.clientHeight + 200;
+    ui.scrollBottom.classList.toggle('visible', show);
   }
 
   function sessionCfg() {
@@ -214,27 +256,27 @@
     ui.messages.innerHTML = '' +
       '<div class="empty-state">' +
         '<span class="feature-icon">' + window.AKL.icon('sparkles', 22) + '</span>' +
-        '<h3>Say something</h3>' +
-        '<p>You are talking to <strong>' + window.AKL.esc(((providerMeta(state.cfg.provider) || {}).name) || 'the model') + '</strong>' +
-        ' via your own key. Responses stream in live.</p>' +
+        '<h3>Ready to chat</h3>' +
+        '<p>Talking to <strong>' + window.AKL.esc(((providerMeta(state.cfg.provider) || {}).name) || 'the model') + '</strong>' +
+        ' with your key. Pick a prompt or type your own.</p>' +
         '<div class="suggestions">' +
-          '<button type="button" class="suggestion" data-prompt="Say hi in five words.">Say hi in five words.</button>' +
-          '<button type="button" class="suggestion" data-prompt="Which model are you, and who made you?">Which model are you, and who made you?</button>' +
-          '<button type="button" class="suggestion" data-prompt="Reply with a tiny JSON object containing ok: true.">Reply with a tiny JSON object.</button>' +
+          '<button type="button" class="suggestion" data-prompt="Say hi in five words."><span class="sug-icon">' + window.AKL.icon('chat', 14) + '</span>Say hi in five words</button>' +
+          '<button type="button" class="suggestion" data-prompt="Explain what an API key is in 2 sentences."><span class="sug-icon">' + window.AKL.icon('key', 14) + '</span>Explain API keys</button>' +
+          '<button type="button" class="suggestion" data-prompt="Reply with a tiny JSON object containing ok: true."><span class="sug-icon">' + window.AKL.icon('code', 14) + '</span>Return a tiny JSON</button>' +
         '</div>' +
       '</div>';
 
     ui.messages.querySelectorAll('.suggestion').forEach(function (btn) {
       btn.addEventListener('click', function () {
         ui.input.value = btn.getAttribute('data-prompt');
-        ui.input.focus();
         autoGrow();
+        send();
       });
     });
   }
 
   /* ---------------- message rendering ---------------- */
-  function appendMessage(role, content, silent) {
+  function appendMessage(role, content, silent, forceScroll) {
     var wrap = document.createElement('div');
     wrap.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
 
@@ -245,7 +287,7 @@
     var body = document.createElement('div');
     var bubble = document.createElement('div');
     bubble.className = 'bubble';
-    bubble.innerHTML = format(content);
+    bubble.innerHTML = content ? format(content) : '';
 
     var meta = document.createElement('div');
     meta.className = 'msg-meta';
@@ -261,7 +303,7 @@
       state.convo.push({ role: role, content: content });
       persistConvo();
     }
-    scrollDown();
+    scrollDown(forceScroll || role === 'user');
 
     return { wrap: wrap, bubble: bubble, meta: meta, body: body, content: content };
   }
@@ -292,11 +334,16 @@
     wrap.className = 'msg ai error';
     wrap.innerHTML = '' +
       '<span class="avatar ai">' + window.AKL.icon('alert-circle', 16) + '</span>' +
-      '<div><div class="bubble"><strong>' + window.AKL.esc(title) + '</strong><br>' +
-      window.AKL.esc(message) + (fix ? '<br><span class="muted">' + window.AKL.esc(fix) + '</span>' : '') +
-      '</div><div class="msg-meta"><a href="index.html">Run a full key check →</a></div></div>';
+      '<div class="msg-body">' +
+        '<div class="bubble">' +
+          '<div class="error-title">' + window.AKL.icon('alert-triangle', 15) + ' ' + window.AKL.esc(title) + '</div>' +
+          '<div class="error-msg">' + window.AKL.esc(message) + '</div>' +
+          (fix ? '<div class="error-fix">' + window.AKL.esc(fix) + '</div>' : '') +
+        '</div>' +
+        '<div class="msg-meta" style="opacity:1;transform:none"><a href="index.html">Run a full key check →</a></div>' +
+      '</div>';
     ui.messages.appendChild(wrap);
-    scrollDown();
+    scrollDown(true);
   }
 
   /* ---------------- sending ---------------- */
@@ -343,8 +390,8 @@
       appendMessage('user', text);
     }
 
-    var node = appendMessage('assistant', '', true);
-    node.bubble.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
+    var node = appendMessage('assistant', '', true, true);
+    node.bubble.innerHTML = '<span class="typing" aria-label="Generating"><span></span><span></span><span></span></span>';
 
     setStreaming(true);
     var controller = new AbortController();
@@ -561,6 +608,21 @@
   function bind() {
     ui.form.addEventListener('submit', function (e) { e.preventDefault(); send(); });
 
+    ui.messages.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest('.code-copy') : null;
+      if (!btn) return;
+      var block = btn.closest('.code-block');
+      var pre = block ? block.querySelector('pre') : null;
+      var text = pre ? pre.textContent : '';
+      window.AKL.copy(text).then(function (ok) {
+        window.AKL.toast(ok ? 'Copied.' : 'Copy blocked.', ok ? 'ok' : 'bad', 1600);
+        if (ok) {
+          btn.innerHTML = window.AKL.icon('check', 12) + ' Copied';
+          setTimeout(function () { btn.innerHTML = window.AKL.icon('copy', 12) + ' Copy'; }, 1400);
+        }
+      });
+    });
+
     ui.input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
@@ -623,6 +685,13 @@
     });
 
     ui.scrim.addEventListener('click', closeSide);
+
+    ui.messages.addEventListener('scroll', updateScrollBtn);
+    if (ui.scrollBottom) {
+      ui.scrollBottom.addEventListener('click', function () {
+        ui.messages.scrollTo({ top: ui.messages.scrollHeight, behavior: 'smooth' });
+      });
+    }
 
     window.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeSide();
