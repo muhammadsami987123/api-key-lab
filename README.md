@@ -8,7 +8,7 @@
 
 Paste any AI provider key. Get a real health report — authentication, model access, a live completion, latency, tokens and quota — in plain English. Then chat with the same key on a dedicated page.
 
-[![Live demo](https://img.shields.io/badge/LIVE_DEMO-api--key--lab.vercel.app-0A84FF?style=for-the-badge&logo=vercel&logoColor=white)](https://api-key-lab.vercel.app)
+[![Live demo](https://img.shields.io/badge/LIVE_DEMO-apikeylab.vercel.app-0A84FF?style=for-the-badge&logo=vercel&logoColor=white)](https://apikeylab.vercel.app)
 [![License](https://img.shields.io/badge/LICENSE-MIT-0F7B3F?style=for-the-badge)](LICENSE)
 [![Dependencies](https://img.shields.io/badge/DEPENDENCIES-0-6B7280?style=for-the-badge)](#quick-start)
 [![Providers](https://img.shields.io/badge/PROVIDERS-16-9A5B00?style=for-the-badge)](#-supported-providers)
@@ -47,7 +47,7 @@ Paste any AI provider key. Get a real health report — authentication, model ac
 
 ## 🚀 Demo
 
-> **Live:** <https://api-key-lab.vercel.app> — deploy with `vercel --prod` to activate this URL.
+> **Live:** <https://apikeylab.vercel.app>
 
 No sign-up, no install, no tracking. Open the page, paste a key, read the report.
 

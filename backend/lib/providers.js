@@ -148,7 +148,7 @@ function openAiHeaders(apiKey, providerId) {
     Authorization: 'Bearer ' + apiKey
   };
   if (providerId === 'openrouter') {
-    headers['HTTP-Referer'] = 'https://api-key-lab.vercel.app';
+    headers['HTTP-Referer'] = 'https://apikeylab.vercel.app';
     headers['X-Title'] = 'API Key Lab';
   }
   return headers;
