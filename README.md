@@ -12,6 +12,7 @@ Paste any AI provider key. Get a real health report — authentication, model ac
 [![License](https://img.shields.io/badge/LICENSE-MIT-0F7B3F?style=for-the-badge)](LICENSE)
 [![Dependencies](https://img.shields.io/badge/DEPENDENCIES-0-6B7280?style=for-the-badge)](#quick-start)
 [![Providers](https://img.shields.io/badge/PROVIDERS-16-9A5B00?style=for-the-badge)](#-supported-providers)
+[![Release](https://img.shields.io/github/v/release/muhammadsami987123/api-key-lab?style=for-the-badge&color=0A84FF)](https://github.com/muhammadsami987123/api-key-lab/releases)
 
 [![GitHub stars](https://img.shields.io/github/stars/muhammadsami987123/api-key-lab?style=social)](https://github.com/muhammadsami987123/api-key-lab/stargazers)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-0A84FF.svg?style=social)](https://github.com/muhammadsami987123/api-key-lab/pulls)
