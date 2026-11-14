@@ -118,6 +118,10 @@ That is the entire setup: **zero dependencies**, no build step, no Vercel CLI, n
 
 <sub>Temperature, max tokens, system prompt, stop generation, retry, copy. The key carries over from the tester through `sessionStorage` — and is wiped on reload.</sub>
 
+<img src="docs/screenshots/09-chat-streaming.webp" alt="Streaming a response token by token" width="100%" />
+
+<sub>Responses stream token by token over SSE, with a live first-token timer and a stop button.</sub>
+
 ### Details that matter
 
 <table>
