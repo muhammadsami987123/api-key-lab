@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy — API Key Lab</title>
+<meta name="description" content="API Key Lab privacy policy: no accounts, no cookies, no analytics, no key storage. Keys live in your tab's session memory and disappear when you close it.">
+<meta name="theme-color" content="#F2F4F9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230A84FF'/%3E%3Cpath d='M11 21l10-10M11 11h10v10' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/glass.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="bg-mesh" aria-hidden="true"><span class="blob blob-a"></span><span class="blob blob-b"></span><span class="blob blob-c"></span></div>
+<div class="bg-grain" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="API Key Lab home">
+      <span class="brand-mark" data-icon="layers"></span>
+      API Key Lab
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html" data-page="index.html" data-icon-inline="zap">Tester</a>
+      <a href="chat.html" data-page="chat.html" data-icon-inline="chat">Chatbot</a>
+      <a href="index.html#how" data-icon-inline="book">How it works</a>
+      <a href="security.html" data-page="security.html" data-icon-inline="shield">Security</a>
+    </nav>
+    <a class="header-cta" href="index.html" data-icon-inline="key">Check a key</a>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap page">
+    <div class="glass card page-narrow">
+      <div class="legal-head">
+        <span class="eyebrow">Trust</span>
+        <h1>Privacy policy</h1>
+        <p class="meta">Last updated: March 2026</p>
+      </div>
+      <div class="prose">
+        <p>API Key Lab is a free, no-account utility that checks whether an AI provider key works. This page explains exactly what happens to your data, in plain language.</p>
+
+        <h2>1. What we collect</h2>
+        <p><strong>No accounts.</strong> There is no sign-up, no profile, no email collection.</p>
+        <p><strong>No analytics.</strong> We do not use Google Analytics, Plausible, PostHog, session recording, heatmaps or advertising pixels.</p>
+        <p><strong>No cookies.</strong> The site sets no cookies for tracking or personalisation.</p>
+        <p><strong>One transient record:</strong> while you use the tool, this tab keeps your provider, key and chosen model in <code>sessionStorage</code> so the tester and chatbot pages share it. It never leaves your browser except inside the API request you trigger, and it is deleted when the tab closes.</p>
+
+        <h2>2. What happens to your API key</h2>
+        <p>Your key is forwarded to the provider you selected (for example OpenAI, Anthropic or Google) so that provider can answer the test request. It is not stored, logged, indexed, shared, sold or used for any other purpose. Full mechanics are on the <a href="security.html">security page</a>.</p>
+
+        <h2>3. Server logs</h2>
+        <p>Our serverless functions do not log request bodies, headers or keys. Our hosting platform (Vercel) retains standard infrastructure metadata — such as IP address, timestamp, path and status code — for operational and abuse-prevention purposes, under its own privacy terms.</p>
+        <p>For abuse prevention we keep a short-lived in-memory counter per IP address (40 checks and 60 chat calls per minute). It holds no key material and is discarded automatically.</p>
+
+        <h2>4. Third parties</h2>
+        <ul>
+          <li><strong>Your chosen AI provider</strong> receives the key and prompt you submit. Their privacy policy governs that request.</li>
+          <li><strong>Vercel</strong> hosts the site and the proxy function.</li>
+          <li><strong>Google Fonts</strong> serves the typefaces used on the page, which means Google receives your IP address when fonts load.</li>
+        </ul>
+        <p>There are no other third-party scripts.</p>
+
+        <h2>5. Local models</h2>
+        <p>When you select Ollama or another localhost endpoint, the browser talks directly to your machine. Those requests never touch our servers.</p>
+
+        <h2>6. Children</h2>
+        <p>The service is intended for developers and is not directed at children under 13. We do not knowingly collect data from anyone.</p>
+
+        <h2>7. Your choices</h2>
+        <ul>
+          <li>Use a scoped or temporary key when testing, then revoke it at the provider.</li>
+          <li>Close the tab to wipe the stored key immediately.</li>
+          <li>Block Google Fonts in your browser; the site still works with system fonts.</li>
+        </ul>
+
+        <h2>8. Changes</h2>
+        <p>If this policy changes materially, the updated date at the top will change with it. Continued use after an update means you accept the revised policy.</p>
+
+        <h2>9. Contact</h2>
+        <p>Questions or a data concern: <a href="mailto:m.samiwaseem1234@gmail.com">m.samiwaseem1234@gmail.com</a>.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="index.html" aria-label="API Key Lab home">
+          <span class="brand-mark" data-icon="layers"></span>
+          API Key Lab
+        </a>
+        <p>An open-source key checker for AI APIs. Paste a key, get a real health report — no accounts, no tracking, no stored secrets.</p>
+        <div class="footer-social">
+          <a class="social" href="mailto:m.samiwaseem1234@gmail.com" aria-label="Email Muhammad Sami" title="Email">
+            <span data-icon="mail" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://muhammad-sami.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Muhammad Sami portfolio" title="Portfolio">
+            <span data-icon="globe" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://github.com/muhammadsami987123" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile" title="GitHub">
+            <span data-icon="github" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://www.linkedin.com/in/muhammad-sami-3aa6102b8/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
+            <span data-icon="linkedin" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://x.com/MSAMIWASEEM1" target="_blank" rel="noopener noreferrer" aria-label="X profile" title="X">
+            <span data-icon="x" data-icon-size="15"></span>
+          </a>
+        </div>
+        <div class="footer-open">
+          <span class="pill pill-ok"><span class="pill-dot"></span>Open source · MIT</span>
+          <a class="footer-src" href="https://github.com/muhammadsami987123/api-key-lab" target="_blank" rel="noopener noreferrer">
+            <span data-icon="code" data-icon-size="14"></span> Source code
+          </a>
+        </div>
+      </div>
+
+      <nav class="footer-links" aria-label="Footer">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="index.html">Key tester</a>
+          <a href="chat.html">Chatbot</a>
+          <a href="index.html#how">How it works</a>
+          <a href="index.html#key-card">Verify a key</a>
+        </div>
+        <div class="footer-col">
+          <h4>Trust</h4>
+          <a href="security.html">Security model</a>
+          <a href="privacy.html">Privacy policy</a>
+          <a href="terms.html">Terms of use</a>
+          <a href="https://github.com/muhammadsami987123/api-key-lab/issues" target="_blank" rel="noopener noreferrer">Report an issue</a>
+        </div>
+        <div class="footer-col">
+          <h4>Founder</h4>
+          <a href="mailto:m.samiwaseem1234@gmail.com">Email Sami</a>
+          <a href="https://muhammad-sami.vercel.app" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://www.linkedin.com/in/muhammad-sami-3aa6102b8/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://www.upwork.com/freelancers/~016aef534b50ab5667" target="_blank" rel="noopener noreferrer">Hire on Upwork</a>
+          <a href="https://api-key-lab.vercel.app" target="_blank" rel="noopener noreferrer">Live demo</a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Muhammad Sami. Built in Karachi, Pakistan.</span>
+      <span class="footer-meta">
+        <span class="made-by"><span data-icon="heart" data-icon-size="13"></span>Built with care by <a href="https://muhammad-sami.vercel.app" target="_blank" rel="noopener noreferrer">Muhammad Sami</a></span>
+        <span aria-hidden="true">·</span>
+        <a href="mailto:m.samiwaseem1234@gmail.com">m.samiwaseem1234@gmail.com</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/common.js" defer></script>
+</body>
+</html>

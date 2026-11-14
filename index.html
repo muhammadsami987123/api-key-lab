@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Key Lab — Verify any AI API key in seconds</title>
+<meta name="description" content="Paste an OpenAI, Anthropic, Gemini, Groq, Mistral, OpenRouter, xAI or custom API key and get an instant health report: auth, models, live completion, quota and exact error codes. Keys never leave your browser session.">
+<meta name="theme-color" content="#F2F4F9">
+<meta property="og:title" content="API Key Lab — Verify any AI API key in seconds">
+<meta property="og:description" content="Instant health report for any AI provider key. Auth, models, live completion, quota and plain-English errors.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230A84FF'/%3E%3Cpath d='M11 21l10-10M11 11h10v10' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/glass.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="bg-mesh" aria-hidden="true">
+  <span class="blob blob-a"></span>
+  <span class="blob blob-b"></span>
+  <span class="blob blob-c"></span>
+</div>
+<div class="bg-grain" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="API Key Lab home">
+      <span class="brand-mark" data-icon="layers"></span>
+      API Key Lab
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html" data-page="index.html" data-icon-inline="zap">Tester</a>
+      <a href="chat.html" data-page="chat.html" data-icon-inline="chat">Chatbot</a>
+      <a href="#how" data-icon-inline="book">How it works</a>
+      <a href="security.html" data-page="security.html" data-icon-inline="shield">Security</a>
+    </nav>
+    <a class="header-cta" href="#key-card" data-icon-inline="key">Verify a key</a>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap page">
+
+    <!-- HERO -->
+    <section class="hero">
+      <span class="hero-badge">
+        <span class="dot" aria-hidden="true"></span>
+        Keys stay in your session — never stored, never logged
+      </span>
+      <h1>Know your API key works, before you ship.</h1>
+      <p class="lede">
+        Paste any AI provider key. We run the same checks your app will — authentication, model access,
+        a live completion and quota — then tell you exactly what is wrong in plain English.
+      </p>
+    </section>
+
+    <!-- TESTER -->
+    <section class="section" id="key-card" aria-labelledby="tester-title">
+      <div class="glass card spotlight">
+        <div class="card-head">
+          <h2 class="card-title" id="tester-title">
+            <span class="step-num">1</span>
+            Add your key
+          </h2>
+          <span class="pill pill-info" id="privacy-pill"></span>
+        </div>
+
+        <form id="verify-form" novalidate>
+          <!-- API key -->
+          <div class="field" id="keyField">
+            <label class="label" for="keyInput">
+              API key
+              <a class="label-hint" href="#" id="docsLink" target="_blank" rel="noopener noreferrer" hidden>Get a key</a>
+            </label>
+            <div class="input-shell" id="keyShell">
+              <span data-icon="key" data-icon-size="18"></span>
+              <input id="keyInput" type="password" inputmode="text" spellcheck="false" autocomplete="off"
+                     autocapitalize="off" placeholder="Paste your API key…" aria-describedby="key-help">
+              <div class="input-actions">
+                <button type="button" class="icon-btn" id="pasteKey" title="Paste from clipboard" aria-label="Paste API key from clipboard">
+                  <span data-icon="copy"></span>
+                </button>
+                <button type="button" class="icon-btn" id="toggleKey" aria-label="Show API key" aria-pressed="false">
+                  <span data-icon="eye" id="eyeIcon"></span>
+                </button>
+              </div>
+            </div>
+            <div class="detect-row" id="detectRow">
+              <span class="pill" id="detectPill">Waiting for a key…</span>
+              <span class="detect-note" id="detectNote"></span>
+            </div>
+            <p class="helper" id="key-help">
+              <span data-icon="lock" data-icon-size="14"></span>
+              Sent only to the provider you choose, through our stateless proxy. Cleared when you close the tab.
+            </p>
+          </div>
+
+          <div class="grid-2">
+            <!-- Provider -->
+            <div class="field">
+              <label class="label" id="providerLabel">Provider</label>
+              <div class="picker" id="providerPicker"></div>
+              <p class="helper" id="provider-note">Auto-detect picks the provider from the key format. You can always override.</p>
+            </div>
+
+            <!-- Model -->
+            <div class="field">
+              <label class="label" for="modelInput">
+                Model
+                <span class="label-hint" id="modelHint">Auto</span>
+              </label>
+              <div class="input-shell">
+                <span data-icon="cpu" data-icon-size="18"></span>
+                <input id="modelInput" type="text" list="modelList" spellcheck="false" autocomplete="off"
+                       placeholder="Auto — best available model">
+                <div class="input-actions">
+                  <button type="button" class="icon-btn" id="loadModels" title="Fetch available models" aria-label="Fetch available models">
+                    <span data-icon="refresh"></span>
+                  </button>
+                </div>
+              </div>
+              <datalist id="modelList"></datalist>
+              <p class="helper" id="modelHelp">Leave empty and we pick the cheapest capable model.</p>
+            </div>
+          </div>
+
+          <!-- Advanced -->
+          <details class="advanced" id="advancedBox">
+            <summary>
+              <span data-icon="wrench" data-icon-size="15"></span>
+              Advanced options
+            </summary>
+            <div class="advanced-body">
+              <div class="advanced-grid">
+                <div class="field" id="baseUrlField" hidden>
+                  <label class="label" for="baseUrl">Base URL</label>
+                  <div class="input-shell">
+                    <span data-icon="globe" data-icon-size="18"></span>
+                    <input id="baseUrl" type="url" spellcheck="false" placeholder="https://api.example.com/v1">
+                  </div>
+                </div>
+
+                <div class="field" id="secretField" hidden>
+                  <label class="label" for="awsSecret">AWS secret access key</label>
+                  <div class="input-shell">
+                    <span data-icon="lock" data-icon-size="18"></span>
+                    <input id="awsSecret" type="password" spellcheck="false" autocomplete="off">
+                  </div>
+                </div>
+
+                <div class="field" id="regionField" hidden>
+                  <label class="label" for="awsRegion">AWS region</label>
+                  <div class="input-shell">
+                    <span data-icon="globe" data-icon-size="18"></span>
+                    <input id="awsRegion" type="text" value="us-east-1" spellcheck="false">
+                  </div>
+                </div>
+
+                <div class="field" id="deploymentField" hidden>
+                  <label class="label" for="azureDeployment">Deployment name</label>
+                  <div class="input-shell">
+                    <span data-icon="cpu" data-icon-size="18"></span>
+                    <input id="azureDeployment" type="text" spellcheck="false" placeholder="gpt-4o-mini">
+                  </div>
+                </div>
+
+                <div class="field" id="versionField" hidden>
+                  <label class="label" for="azureVersion">API version</label>
+                  <div class="input-shell">
+                    <span data-icon="layers" data-icon-size="18"></span>
+                    <input id="azureVersion" type="text" value="2024-08-01-preview" spellcheck="false">
+                  </div>
+                </div>
+
+                <div class="field" id="vertexLocationField" hidden>
+                  <label class="label" for="vertexLocation">Location</label>
+                  <div class="input-shell">
+                    <span data-icon="globe" data-icon-size="18"></span>
+                    <input id="vertexLocation" type="text" value="us-central1" spellcheck="false">
+                  </div>
+                </div>
+              </div>
+
+              <div class="field" id="jsonField" hidden>
+                <label class="label" for="vertexJson">Service-account JSON</label>
+                <div class="input-shell">
+                  <textarea id="vertexJson" rows="4" spellcheck="false" placeholder='{ "type": "service_account", "project_id": "…" }'></textarea>
+                </div>
+                <p class="helper">Used once for this request. Never stored on our servers.</p>
+              </div>
+
+              <p class="helper" id="advancedHelp">
+                Base URL is only needed for custom and local endpoints. Everything else is pre-filled.
+              </p>
+            </div>
+          </details>
+
+          <!-- Actions -->
+          <div class="report-actions">
+            <button type="submit" class="btn btn-primary" id="verifyBtn">
+              <span data-icon="zap" data-icon-size="18"></span>
+              Verify connection
+            </button>
+            <button type="button" class="btn btn-glass" id="openChatBtn" disabled>
+              <span data-icon="chat" data-icon-size="18"></span>
+              Test in chatbot
+            </button>
+            <button type="button" class="btn btn-ghost" id="resetBtn" hidden>
+              <span data-icon="refresh" data-icon-size="16"></span>
+              Start over
+            </button>
+          </div>
+          <p class="field-error" id="formError" role="alert" hidden></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- PIPELINE -->
+    <section class="section" id="pipelineSection" hidden aria-live="polite">
+      <div class="glass card">
+        <div class="card-head">
+          <h2 class="card-title">
+            <span class="step-num">2</span>
+            Running checks
+          </h2>
+          <span class="pill" id="pipelineTimer">0.0 s</span>
+        </div>
+        <div class="pipeline" id="pipeline"></div>
+        <div class="progress-line"><span id="progressBar"></span></div>
+      </div>
+    </section>
+
+    <!-- REPORT -->
+    <section class="section" id="reportSection" hidden aria-labelledby="report-title">
+      <div class="glass card" id="reportCard"></div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="section-head">
+        <h2 id="how-title">How it works</h2>
+        <p>Three checks, one report. Same path your production code takes — nothing simulated.</p>
+      </div>
+      <div class="grid-3 stagger">
+        <article class="glass feature">
+          <span class="feature-icon" data-icon="key" data-icon-size="20"></span>
+          <h3>1. Authenticate</h3>
+          <p>Your key is sent to the provider over TLS. A rejected key stops here with the exact reason and fix.</p>
+        </article>
+        <article class="glass feature">
+          <span class="feature-icon" data-icon="layers" data-icon-size="20"></span>
+          <h3>2. List models</h3>
+          <p>We read the models your key can actually use, then pick the cheapest capable one for the test.</p>
+        </article>
+        <article class="glass feature">
+          <span class="feature-icon" data-icon="zap" data-icon-size="20"></span>
+          <h3>3. Live completion</h3>
+          <p>A tiny real request measures latency, tokens and quota — because a key that lists models can still be out of credit.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" aria-labelledby="faq-title">
+      <div class="section-head">
+        <h2 id="faq-title">Questions people ask</h2>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>Is my API key safe? <span data-icon="plus" data-icon-size="16"></span></summary>
+          <div class="answer">
+            <p>Your key lives in <code>sessionStorage</code> for this tab only and is cleared the moment you close it.
+            It is relayed to the provider you picked through a stateless serverless function — no database, no logs,
+            no analytics. Nothing is written to disk anywhere.</p>
+            <p>You can verify this yourself: open DevTools → Network while verifying.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Why is there a server proxy at all? <span data-icon="plus" data-icon-size="16"></span></summary>
+          <div class="answer">
+            <p>OpenAI, Mistral and a few others do not allow browser-origin requests (CORS). Without a proxy the browser
+            cannot tell “invalid key” apart from “blocked by CORS”, which makes a validator useless. The proxy forwards
+            one request and forgets it.</p>
+          </div>
+        </details>
+        <details>
+          <summary>What does “insufficient quota” mean? <span data-icon="plus" data-icon-size="16"></span></summary>
+          <div class="answer">
+            <p>Your key is valid but the account has no credit or hit its spending limit. We surface the provider’s own
+            message and the reset time so you know whether to top up or wait.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Can I test a local Ollama server? <span data-icon="plus" data-icon-size="16"></span></summary>
+          <div class="answer">
+            <p>Yes. Choose <code>Ollama (local)</code>. Local calls run straight from your browser to
+            <code>localhost:11434</code> — they never touch our servers. Start Ollama with
+            <code>OLLAMA_ORIGINS=*</code> if the browser blocks the request.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Which providers are supported? <span data-icon="plus" data-icon-size="16"></span></summary>
+          <div class="answer">
+            <p>OpenAI, Anthropic, Google Gemini, Groq, Mistral, OpenRouter, xAI, DeepSeek, Together, Perplexity,
+            Ollama, any OpenAI-compatible endpoint, Azure OpenAI, AWS Bedrock and Google Vertex AI.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="index.html" aria-label="API Key Lab home">
+          <span class="brand-mark" data-icon="layers"></span>
+          API Key Lab
+        </a>
+        <p>An open-source key checker for AI APIs. Paste a key, get a real health report — no accounts, no tracking, no stored secrets.</p>
+        <div class="footer-social">
+          <a class="social" href="mailto:m.samiwaseem1234@gmail.com" aria-label="Email Muhammad Sami" title="Email">
+            <span data-icon="mail" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://muhammad-sami.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Muhammad Sami portfolio" title="Portfolio">
+            <span data-icon="globe" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://github.com/muhammadsami987123" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile" title="GitHub">
+            <span data-icon="github" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://www.linkedin.com/in/muhammad-sami-3aa6102b8/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
+            <span data-icon="linkedin" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://x.com/MSAMIWASEEM1" target="_blank" rel="noopener noreferrer" aria-label="X profile" title="X">
+            <span data-icon="x" data-icon-size="15"></span>
+          </a>
+        </div>
+        <div class="footer-open">
+          <span class="pill pill-ok"><span class="pill-dot"></span>Open source · MIT</span>
+          <a class="footer-src" href="https://github.com/muhammadsami987123/api-key-lab" target="_blank" rel="noopener noreferrer">
+            <span data-icon="code" data-icon-size="14"></span> Source code
+          </a>
+        </div>
+      </div>
+
+      <nav class="footer-links" aria-label="Footer">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="index.html">Key tester</a>
+          <a href="chat.html">Chatbot</a>
+          <a href="index.html#how">How it works</a>
+          <a href="index.html#key-card">Verify a key</a>
+        </div>
+        <div class="footer-col">
+          <h4>Trust</h4>
+          <a href="security.html">Security model</a>
+          <a href="privacy.html">Privacy policy</a>
+          <a href="terms.html">Terms of use</a>
+          <a href="https://github.com/muhammadsami987123/api-key-lab/issues" target="_blank" rel="noopener noreferrer">Report an issue</a>
+        </div>
+        <div class="footer-col">
+          <h4>Founder</h4>
+          <a href="mailto:m.samiwaseem1234@gmail.com">Email Sami</a>
+          <a href="https://muhammad-sami.vercel.app" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://www.linkedin.com/in/muhammad-sami-3aa6102b8/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://www.upwork.com/freelancers/~016aef534b50ab5667" target="_blank" rel="noopener noreferrer">Hire on Upwork</a>
+          <a href="https://api-key-lab.vercel.app" target="_blank" rel="noopener noreferrer">Live demo</a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Muhammad Sami. Built in Karachi, Pakistan.</span>
+      <span class="footer-meta">
+        <span class="made-by"><span data-icon="heart" data-icon-size="13"></span>Built with care by <a href="https://muhammad-sami.vercel.app" target="_blank" rel="noopener noreferrer">Muhammad Sami</a></span>
+        <span aria-hidden="true">·</span>
+        <a href="mailto:m.samiwaseem1234@gmail.com">m.samiwaseem1234@gmail.com</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/common.js" defer></script>
+<script src="assets/js/providers.js" defer></script>
+<script src="assets/js/picker.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>

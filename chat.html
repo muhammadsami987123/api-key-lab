@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chatbot — API Key Lab</title>
+<meta name="description" content="Chat with the model behind your API key. Live responses, model switching, temperature control and clear error handling — all in your browser session.">
+<meta name="theme-color" content="#F2F4F9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230A84FF'/%3E%3Cpath d='M11 21l10-10M11 11h10v10' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/glass.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="bg-mesh" aria-hidden="true">
+  <span class="blob blob-a"></span>
+  <span class="blob blob-b"></span>
+  <span class="blob blob-c"></span>
+</div>
+<div class="bg-grain" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="API Key Lab home">
+      <span class="brand-mark" data-icon="layers"></span>
+      API Key Lab
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html" data-page="index.html" data-icon-inline="zap">Tester</a>
+      <a href="chat.html" data-page="chat.html" data-icon-inline="chat">Chatbot</a>
+      <a href="index.html#how" data-icon-inline="book">How it works</a>
+      <a href="security.html" data-page="security.html" data-icon-inline="shield">Security</a>
+    </nav>
+    <a class="header-cta" href="index.html" data-icon-inline="key">Check a key</a>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap page">
+    <div class="chat-shell">
+
+      <!-- SIDEBAR -->
+      <aside class="chat-side glass" id="chatSide" aria-label="Chat settings">
+        <div class="side-block">
+          <h3>Connection</h3>
+          <div class="conn-card off" id="connCard">
+            <span class="dot" aria-hidden="true"></span>
+            <div>
+              <strong id="connName">No key connected</strong>
+              <span id="connKey">Add a key to start</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-block">
+          <h3>Provider</h3>
+          <div class="picker" id="chatProviderPicker"></div>
+        </div>
+
+        <div class="side-block">
+          <h3>Model</h3>
+          <div class="input-shell">
+            <input id="chatModel" type="text" list="chatModelList" spellcheck="false" autocomplete="off" placeholder="Auto — best available">
+            <div class="input-actions">
+              <button type="button" class="icon-btn" id="chatLoadModels" title="Fetch available models" aria-label="Fetch available models">
+                <span data-icon="refresh"></span>
+              </button>
+            </div>
+          </div>
+          <datalist id="chatModelList"></datalist>
+          <p class="helper" id="chatModelMeta">Leave empty to use the provider default.</p>
+        </div>
+
+        <div class="side-block">
+          <h3>Behaviour</h3>
+          <div class="field">
+            <label class="label" for="chatSystem">
+              System prompt
+              <span class="label-hint">optional</span>
+            </label>
+            <div class="input-shell">
+              <textarea id="chatSystem" rows="3" placeholder="You are a concise assistant."></textarea>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="chatTemp">
+              Temperature
+              <span class="label-hint" id="chatTempValue">0.7</span>
+            </label>
+            <input id="chatTemp" type="range" min="0" max="2" step="0.1" value="0.7" class="range" aria-describedby="chatTempValue">
+          </div>
+          <div class="field">
+            <label class="label" for="chatTokens">Max tokens</label>
+            <div class="input-shell select-shell">
+              <select id="chatTokens">
+                <option value="256">256</option>
+                <option value="512" selected>512</option>
+                <option value="1024">1024</option>
+                <option value="2048">2048</option>
+              </select>
+              <span class="chev" aria-hidden="true" data-icon="chevron-down" data-icon-size="16"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-block">
+          <button type="button" class="btn btn-glass btn-block btn-sm" id="clearChat">
+            <span data-icon="trash" data-icon-size="16"></span>
+            Clear conversation
+          </button>
+          <a class="btn btn-ghost btn-block btn-sm" href="index.html" data-icon-inline="zap">Run a full key check</a>
+          <p class="helper">
+            <span data-icon="lock" data-icon-size="14"></span>
+            Session-only. Closing the tab deletes your key.
+          </p>
+        </div>
+      </aside>
+
+      <div class="side-scrim" id="sideScrim" hidden></div>
+
+      <!-- CHAT -->
+      <section class="chat-main glass" aria-label="Conversation">
+        <div class="chat-top">
+          <div class="chat-top-left">
+            <button type="button" class="icon-btn chat-mobile-bar" id="sideToggle" aria-label="Open settings" aria-expanded="false">
+              <span data-icon="settings"></span>
+            </button>
+            <h2>Chatbot</h2>
+            <span class="pill" id="modelPill">No model</span>
+          </div>
+          <div class="chat-top-actions">
+            <button type="button" class="icon-btn" id="newChat" title="New conversation" aria-label="New conversation">
+              <span data-icon="plus"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="messages" id="messages" role="log" aria-live="polite" aria-label="Messages"></div>
+
+        <div class="composer-wrap">
+          <form class="composer" id="chatForm">
+            <label class="sr-only" for="chatInput">Message</label>
+            <textarea id="chatInput" rows="1" placeholder="Message the model…" autocomplete="off"></textarea>
+            <button type="submit" class="send-btn" id="sendBtn" aria-label="Send message">
+              <span data-icon="send"></span>
+            </button>
+          </form>
+          <div class="composer-foot">
+            <span id="chatStatus">Ready</span>
+            <span><kbd>Enter</kbd> to send · <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="index.html" aria-label="API Key Lab home">
+          <span class="brand-mark" data-icon="layers"></span>
+          API Key Lab
+        </a>
+        <p>An open-source key checker for AI APIs. Paste a key, get a real health report — no accounts, no tracking, no stored secrets.</p>
+        <div class="footer-social">
+          <a class="social" href="mailto:m.samiwaseem1234@gmail.com" aria-label="Email Muhammad Sami" title="Email">
+            <span data-icon="mail" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://muhammad-sami.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Muhammad Sami portfolio" title="Portfolio">
+            <span data-icon="globe" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://github.com/muhammadsami987123" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile" title="GitHub">
+            <span data-icon="github" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://www.linkedin.com/in/muhammad-sami-3aa6102b8/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
+            <span data-icon="linkedin" data-icon-size="17"></span>
+          </a>
+          <a class="social" href="https://x.com/MSAMIWASEEM1" target="_blank" rel="noopener noreferrer" aria-label="X profile" title="X">
+            <span data-icon="x" data-icon-size="15"></span>
+          </a>
+        </div>
+        <div class="footer-open">
+          <span class="pill pill-ok"><span class="pill-dot"></span>Open source · MIT</span>
+          <a class="footer-src" href="https://github.com/muhammadsami987123/api-key-lab" target="_blank" rel="noopener noreferrer">
+            <span data-icon="code" data-icon-size="14"></span> Source code
+          </a>
+        </div>
+      </div>
+
+      <nav class="footer-links" aria-label="Footer">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="index.html">Key tester</a>
+          <a href="chat.html">Chatbot</a>
+          <a href="index.html#how">How it works</a>
+          <a href="index.html#key-card">Verify a key</a>
+        </div>
+        <div class="footer-col">
+          <h4>Trust</h4>
+          <a href="security.html">Security model</a>
+          <a href="privacy.html">Privacy policy</a>
+          <a href="terms.html">Terms of use</a>
+          <a href="https://github.com/muhammadsami987123/api-key-lab/issues" target="_blank" rel="noopener noreferrer">Report an issue</a>
+        </div>
+        <div class="footer-col">
+          <h4>Founder</h4>
+          <a href="mailto:m.samiwaseem1234@gmail.com">Email Sami</a>
+          <a href="https://muhammad-sami.vercel.app" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="https://www.linkedin.com/in/muhammad-sami-3aa6102b8/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://www.upwork.com/freelancers/~016aef534b50ab5667" target="_blank" rel="noopener noreferrer">Hire on Upwork</a>
+          <a href="https://api-key-lab.vercel.app" target="_blank" rel="noopener noreferrer">Live demo</a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Muhammad Sami. Built in Karachi, Pakistan.</span>
+      <span class="footer-meta">
+        <span class="made-by"><span data-icon="heart" data-icon-size="13"></span>Built with care by <a href="https://muhammad-sami.vercel.app" target="_blank" rel="noopener noreferrer">Muhammad Sami</a></span>
+        <span aria-hidden="true">·</span>
+        <a href="mailto:m.samiwaseem1234@gmail.com">m.samiwaseem1234@gmail.com</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/common.js" defer></script>
+<script src="assets/js/providers.js" defer></script>
+<script src="assets/js/picker.js" defer></script>
+<script src="assets/js/chat.js" defer></script>
+</body>
+</html>

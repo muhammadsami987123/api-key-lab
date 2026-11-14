@@ -1,0 +1,23 @@
+{
+  "name": "api-key-lab",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Verify any AI provider API key in seconds — auth, models, live completion and quota.",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "api-key",
+    "validator",
+    "openai",
+    "anthropic",
+    "gemini",
+    "groq",
+    "chatbot"
+  ],
+  "author": "Muhammad Sami",
+  "license": "MIT"
+}
